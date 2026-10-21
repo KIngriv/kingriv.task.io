@@ -1,0 +1,380 @@
+:root {
+    --primary: #3b82f6;
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --danger: #8A2BE2;
+    --success: #10b981;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.65); /* Чуть плотнее для читаемости */
+    padding: 2rem;
+    margin-top: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 1200px; /* <<< УВЕЛИЧЕНО с 960px до 1200px */
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    text-align: center;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+/* Форма: 6 колонок, чтобы все элементы (включая кнопку) влезали в одну строку */
+.add-form {
+    display: grid;
+    grid-template-columns: 1.5fr 0.8fr 1fr 1fr 1fr auto;
+    gap: 16px;
+    margin-bottom: 2rem;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    align-items: end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 6px;
+    text-align: left; /* Выравнивание по левому краю для аккуратности */
+}
+
+input[type="text"],
+select,
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.8);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus,
+input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+button.action-btn {
+    padding: 10px 20px;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Запрещаем перенос текста на кнопке */
+}
+
+.theme-btn {
+    font-size: 1em;
+    border: 2px solid white;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    margin-top: 10px;
+
+}
+
+button.action-btn:hover {
+    background: #6d1bb5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+}
+
+/* Фильтры */
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 8px 18px;
+    border: 1px solid #d1d5db;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    background: white;
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+}
+
+/* Прогресс */
+.progress-container {
+    margin-bottom: 1.5rem;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.progress-bar {
+    height: 10px;
+    background: var(--success);
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.4s ease;
+    margin: 8px auto 0 auto;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+/* Список задач */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    display: grid;
+    /* Оптимизированные колонки под новую ширину */
+    grid-template-columns: 40px 2fr 110px 150px 1fr 90px 40px;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: all 0.2s;
+}
+
+li:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 1100px) {
+    .add-form {
+        grid-template-columns: 1fr 1fr 1fr; /* Перестроение формы на планшетах */
+    }
+    .add-form .form-group:first-child {
+        grid-column: 1 / -1; /* Задача на всю ширину */
+    }
+    button.action-btn {
+        grid-column: 1 / -1;
+    }
+
+    li {
+        grid-template-columns: 40px 1.5fr 100px 130px 40px;
+    }
+    .note-cell, .file-cell {
+        display: none; /* Скрываем менее важные колонки на средних экранах */
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem;
+        margin-top: 20px;
+    }
+    li {
+        grid-template-columns: 40px 1fr 40px;
+        grid-template-rows: auto auto auto;
+        gap: 8px;
+    }
+    .task-text { grid-column: 2 / 3; grid-row: 1; }
+    .badge { grid-column: 3 / 4; grid-row: 1; justify-self: end; }
+    .due-date { grid-column: 2 / 4; grid-row: 2; font-size: 0.8rem; }
+    .delete-btn { grid-column: 3 / 4; grid-row: 1; opacity: 1; }
+}
+
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.task-text {
+    font-size: 1rem;
+    color: #1f2937;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+li.completed {
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+li.completed .task-text,
+li.completed .due-date,
+li.completed .note-cell,
+li.completed .file-cell,
+li.completed .badge {
+    text-decoration: line-through;
+    color: #6b7280;
+}
+
+/* Бейджи важности */
+.badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    width: fit-content;
+}
+
+.badge-urgent { background: #ef4444; }
+.badge-important { background: #f59e0b; color: #1f2937; text-shadow: none; }
+.badge-normal { background: #3b82f6; }
+.badge-low { background: #9ca3af; }
+
+.due-date, .note-cell, .file-cell {
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+.overdue {
+    color: #dc2626 !important;
+    font-weight: 700;
+}
+
+.file-btn {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.file-btn:hover {
+    background: #3730a3;
+    color: white;
+    border-color: #3730a3;
+}
+
+.delete-btn {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+li:hover .delete-btn {
+    opacity: 1;
+}
+
+.delete-btn:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+.footer-author {
+    text-align: right;
+    margin-top: 1.5rem;
+}
+
+.footer-author > button {
+    font-size: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.2);
+    color: #1f2937;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    font-weight: 600;
+}
+
+.footer-author > button:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
