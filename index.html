@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘Планировщик задач 📝</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>📘Планировщик</h2>
+        </div>
+        <nav class="category-nav">
+            <button class="cat-btn active" onclick="setCategory('all', this)">📋 Все записи</button>
+            <button class="cat-btn" onclick="setCategory('task', this)">✅ Задачи</button>
+            <button class="cat-btn" onclick="setCategory('assignment', this)">🤝 Поручения</button>
+            <button class="cat-btn" onclick="setCategory('protocol', this)">📑 Протоколы</button>
+            <button class="cat-btn" onclick="setCategory('note', this)">💡 Заметки</button>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <h1 id="currentCategoryTitle">📋 Все записи</h1>
+            <button class="add-btn-toggle" onclick="toggleForm()">
+                <i class="ph ph-plus"></i> Добавить
+            </button>
+        </header>
+
+        <div class="add-form-panel" id="addFormPanel">
+            <form onsubmit="event.preventDefault(); addTask();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="ph ph-folder"></i> Раздел</label>
+                        <select id="categoryInput" onchange="handleCategoryChange()">
+                            <option value="task">✅ Задача</option>
+                            <option value="assignment">🤝 Поручение</option>
+                            <option value="protocol">📑 Протокол</option>
+                            <option value="note">💡 Заметка</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-grow">
+                        <label><i class="ph ph-text-t"></i> Название / Тема</label>
+                        <input type="text" id="taskInput" placeholder="Например: Протокол совещания №5" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="ph ph-flag"></i> Важность</label>
+                        <select id="priorityInput">
+                            <option value="urgent">🔥 Срочно</option>
+                            <option value="important">⭐ Важно</option>
+                            <option value="normal" selected>📌 Обычное</option>
+                            <option value="low">☕ Не важно</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="ph ph-calendar"></i> Общий срок (опц.)</label>
+                        <input type="datetime-local" id="dueDateInput">
+                    </div>
+                    <div class="form-group flex-grow">
+                        <label><i class="ph ph-paperclip"></i> Файл (до 5 МБ)</label>
+                        <input type="file" id="fileInput">
+                    </div>
+                </div>
+
+                <!-- Динамический блок для пунктов протокола -->
+                <div id="protocolItemsContainer" class="protocol-form-container" style="display: none;">
+                    <label><i class="ph ph-list-checks"></i> Пункты протокола (каждый со своим сроком)</label>
+                    <div id="protocolItemsList"></div>
+                    <button type="button" class="add-item-btn" onclick="addProtocolItemRow()">
+                        <i class="ph ph-plus"></i> Добавить пункт
+                    </button>
+                </div>
+
+                <div class="form-group full-width" style="margin-top: 16px;">
+                    <label><i class="ph ph-note"></i> Общее примечание</label>
+                    <textarea id="noteInput" rows="2" placeholder="Дополнительная информация..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="toggleForm()">Отмена</button>
+                    <button type="submit" class="action-btn"><i class="ph ph-check-circle"></i> Сохранить</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="tasks-container" id="tasksContainer"></div>
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
