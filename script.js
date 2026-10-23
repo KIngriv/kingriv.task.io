@@ -334,21 +334,6 @@ function escapeHtml(text) {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-const themes = [
-    'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
-    'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)'
-];
-let themeIndex = parseInt(localStorage.getItem('savedThemeIndex')) || 0;
-document.body.style.background = themes[themeIndex];
-
-function changeTheme() {
-    themeIndex = (themeIndex + 1) % themes.length;
-    document.body.style.background = themes[themeIndex];
-    localStorage.setItem('savedThemeIndex', themeIndex);
-}
-
 initDB().then(() => {
     renderTasks();
     setInterval(renderTasks, 60000); // Обновление таймеров каждую минуту
