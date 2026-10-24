@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Планировщик задач</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Планировщик</h2>
+            </div>
+            <nav class="category-nav">
+                <button class="cat-btn active" onclick="setCategory('task', this)">
+                    <i class="ph ph-check-square"></i> Задачи
+                </button>
+                <button class="cat-btn" onclick="setCategory('assignment', this)">
+                    <i class="ph ph-handshake"></i> Поручения
+                </button>
+                <button class="cat-btn" onclick="setCategory('protocol', this)">
+                    <i class="ph ph-file-text"></i> Протоколы
+                </button>
+                <button class="cat-btn" onclick="setCategory('note', this)">
+                    <i class="ph ph-lightbulb"></i> Заметки
+                </button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="currentCategoryTitle">✅ Задачи</h1>
+                <div class="top-bar-actions">
+                    <button class="clear-all-btn" onclick="clearAllTasks()" title="Очистить все записи">
+                        <i class="ph ph-trash-simple"></i> Очистить все
+                    </button>
+                    <button class="add-btn-toggle" onclick="toggleForm()">
+                        <i class="ph ph-plus"></i> Добавить
+                    </button>
+                </div>
+            </div>
+
+            <div class="add-form-panel" id="addFormPanel">
+                <form onsubmit="event.preventDefault(); addTask();">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="ph ph-tag"></i> Раздел</label>
+                            <select id="categoryInput" onchange="handleCategoryChange()" required>
+                                <option value="task">✅ Задача</option>
+                                <option value="assignment">🤝 Поручение</option>
+                                <option value="protocol">📑 Протокол</option>
+                                <option value="note">💡 Заметка</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-grow">
+                            <label><i class="ph ph-text-aa"></i> Название / Тема</label>
+                            <input type="text" id="taskInput" placeholder="Введите название..." required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="ph ph-flag"></i> Важность</label>
+                            <select id="priorityInput">
+                                <option value="urgent">🔥 Срочно</option>
+                                <option value="important">⭐ Важно</option>
+                                <option value="normal" selected>📌 Обычное</option>
+                                <option value="low">☕ Не важно</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="ph ph-calendar"></i> Общий срок (опц.)</label>
+                            <input type="datetime-local" id="dueDateInput">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="ph ph-paperclip"></i> Файл (до 5 МБ)</label>
+                            <input type="file" id="fileInput" onchange="handleNewFileSelected()">
+                            <div id="currentFileDisplay" class="current-file-display">
+                                <i class="ph ph-paperclip"></i>
+                                <span>Текущий файл: <strong id="currentFileName"></strong></span>
+                                <button type="button" class="remove-file-btn" onclick="removeCurrentFile()" title="Удалить файл">
+                                    <i class="ph ph-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="protocolItemsContainer" style="display:none;">
+                        <div class="protocol-form-container">
+                            <label><i class="ph ph-list-checks"></i> Пункты протокола (каждый со своим сроком)</label>
+                            <div id="protocolItemsList"></div>
+                            <button type="button" class="add-item-btn" onclick="addProtocolItemRow()">
+                                <i class="ph ph-plus"></i> Добавить пункт
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label><i class="ph ph-note"></i> Общее примечание</label>
+                            <textarea id="noteInput" rows="2" placeholder="Дополнительная информация..."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="toggleForm()">Отмена</button>
+                        <button type="submit" class="action-btn">
+                            <i class="ph ph-check"></i> Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-card stat-today">
+                    <div class="stat-icon"><i class="ph ph-sun"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="todayCount">0</div>
+                        <div class="stat-label">Задач на сегодня</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-upcoming">
+                    <div class="stat-icon"><i class="ph ph-clock-countdown"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="upcomingCount">0</div>
+                        <div class="stat-label">В ближайшие 7 дней</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-overdue">
+                    <div class="stat-icon"><i class="ph ph-warning-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="overdueCount">0</div>
+                        <div class="stat-label">Просрочено</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-completed">
+                    <div class="stat-icon"><i class="ph ph-check-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="completedCount">0</div>
+                        <div class="stat-label">Выполнено</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tasks-container" id="tasksContainer"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
