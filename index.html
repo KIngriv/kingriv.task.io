@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Планировщик задач</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.0/src/regular/style.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
+</head>
+<body>
+
+<!-- Анимированный фон -->
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <i class="ph ph-lightning"></i>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">Планировщик задач</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Категории</div>
+      <button class="nav-item active" data-cat="task" onclick="setCategory('task', this)">
+        <div class="nav-icon task"><i class="ph ph-check-square"></i></div>
+        <span class="nav-label">Задачи</span>
+        <span class="nav-count" id="count-task">0</span>
+      </button>
+      <button class="nav-item" data-cat="assignment" onclick="setCategory('assignment', this)">
+        <div class="nav-icon assignment"><i class="ph ph-handshake"></i></div>
+        <span class="nav-label">Поручения</span>
+        <span class="nav-count" id="count-assignment">0</span>
+      </button>
+      <button class="nav-item" data-cat="protocol" onclick="setCategory('protocol', this)">
+        <div class="nav-icon protocol"><i class="ph ph-scroll"></i></div>
+        <span class="nav-label">Протоколы</span>
+        <span class="nav-count" id="count-protocol">0</span>
+      </button>
+      <button class="nav-item" data-cat="note" onclick="setCategory('note', this)">
+        <div class="nav-icon note"><i class="ph ph-lightbulb"></i></div>
+        <span class="nav-label">Заметки</span>
+        <span class="nav-count" id="count-note">0</span>
+      </button>
+    </nav>
+
+    <!-- МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
+    <div class="music-player">
+      <div class="music-player-head">
+        <i class="ph ph-music-notes"></i>
+        <span>Музыка</span>
+      </div>
+      <div class="music-player-body">
+        <div class="music-track-info">
+          <div class="music-track-name" id="trackName">Выберите трек</div>
+        </div>
+        <div class="music-controls">
+          <button class="music-btn" id="playBtn" onclick="togglePlay()">
+            <i class="ph ph-play" id="playIcon"></i>
+          </button>
+        </div>
+        <div class="music-progress" id="musicProgress">
+          <div class="music-progress-bar" id="progressBar"></div>
+        </div>
+        <div class="music-time">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+        <div class="music-volume">
+          <i class="ph ph-speaker-high"></i>
+          <input type="range" id="volumeSlider" min="0" max="100" value="70" oninput="setVolume(this.value)">
+        </div>
+        <label class="music-file-btn">
+          <i class="ph ph-upload-simple"></i>
+          <span>Загрузить трек</span>
+          <input type="file" id="musicFileInput" accept="audio/*" onchange="loadMusicFile(event)" style="display:none">
+        </label>
+      </div>
+    </div>
+ <div class="sidebar-footer">
+      <div class="quick-stats">
+        <div class="qs-item">
+          <i class="ph ph-trophy"></i>
+          <div>
+            <div class="qs-num" id="footer-done">0</div>
+            <div class="qs-lbl">выполнено</div>
+          </div>
+        </div>
+        <div class="qs-item">
+          <i class="ph ph-fire"></i>
+          <div>
+            <div class="qs-num" id="footer-overdue">0</div>
+            <div class="qs-lbl">просрочено</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-title">
+          <h1 id="currentCategoryTitle">ЗАДАЧИ</h1>
+          <span class="page-date" id="currentDate"></span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="view-switch" role="tablist">
+          <button class="vs-btn active" id="viewListBtn" onclick="switchView('list')">
+            <i class="ph ph-list-bullets"></i>
+            <span>Список</span>
+          </button>
+          <button class="vs-btn" id="viewCalendarBtn" onclick="switchView('calendar')">
+            <i class="ph ph-calendar-blank"></i>
+            <span>Календарь</span>
+          </button>
+        </div>
+        <button class="btn btn-ghost" onclick="clearAllTasks()" title="Очистить категорию">
+          <i class="ph ph-trash"></i>
+        </button>
+        <button class="btn btn-primary" onclick="openModal()">
+          <i class="ph ph-plus"></i>
+          <span>Новая запись</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- BENTO DASHBOARD -->
+    <section class="bento">
+      <div class="bento-card bento-today">
+        <div class="bento-icon-wrap today"><i class="ph ph-sun"></i></div>
+        <div class="bento-body">
+          <div class="bento-label">Сегодня</div>
+          <div class="bento-value" id="todayCount">0</div>
+        </div>
+      </div>
+      <div class="bento-card bento-week">
+        <div class="bento-icon-wrap week"><i class="ph ph-lightning"></i></div>
+        <div class="bento-body">
+          <div class="bento-label">На неделе</div>
+          <div class="bento-value" id="upcomingCount">0</div>
+        </div>
+      </div>
+      <div class="bento-card bento-overdue">
+        <div class="bento-icon-wrap overdue"><i class="ph ph-warning-octagon"></i></div>
+        <div class="bento-body">
+          <div class="bento-label">Просрочено</div>
+          <div class="bento-value" id="overdueCount">0</div>
+        </div>
+      </div>
+      <div class="bento-card bento-done">
+        <div class="bento-icon-wrap done"><i class="ph ph-check-circle"></i></div>
+        <div class="bento-body">
+          <div class="bento-label">Выполнено</div>
+          <div class="bento-value" id="completedCount">0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="filters" id="compactToolbar">
+      <div class="filters-group">
+        <div class="filter-chip">
+          <i class="ph ph-flag"></i>
+          <select id="filterPriority" onchange="applyFilters()">
+            <option value="all">Все приоритеты</option>
+            <option value="urgent">🔥 Срочно</option>
+            <option value="important">⭐ Важно</option>
+            <option value="normal">📌 Обычное</option>
+            <option value="low">☕ Не важно</option>
+          </select>
+        </div>
+        <div class="filter-chip">
+          <i class="ph ph-circle-half"></i>
+          <select id="filterStatus" onchange="applyFilters()">
+            <option value="all">Все статусы</option>
+            <option value="active">⏳ Активные</option>
+            <option value="completed">✅ Выполненные</option>
+          </select>
+        </div>
+        <div class="filter-chip">
+          <i class="ph ph-calendar"></i>
+          <select id="filterDate" onchange="applyFilters()">
+            <option value="all">Весь период</option>
+            <option value="today">Сегодня</option>
+            <option value="week">7 дней</option>
+            <option value="overdue">Просроченные</option>
+            <option value="nodate">Без срока</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="resetFilters()" title="Сбросить фильтры">
+        <i class="ph ph-arrows-clockwise"></i>
+        <span>Сбросить</span>
+      </button>
+    </section>
+
+    <!-- TASKS LIST -->
+    <section class="tasks-container" id="tasksContainer"></section>
+
+    <!-- CALENDAR -->
+    <section class="calendar-container" id="calendarContainer" style="display:none">
+      <div class="cal-head">
+        <button class="cal-nav" onclick="changeMonth(-1)"><i class="ph ph-caret-left"></i></button>
+        <div class="cal-title-wrap">
+          <h2 class="cal-title" id="calendarTitle">Октябрь 2026</h2>
+          <button class="cal-today" onclick="goToToday()">Сегодня</button>
+        </div>
+        <button class="cal-nav" onclick="changeMonth(1)"><i class="ph ph-caret-right"></i></button>
+      </div>
+      <div class="cal-legend">
+        <div class="lg-item"><span class="lg-dot task"></span>Задачи</div>
+        <div class="lg-item"><span class="lg-dot assignment"></span>Поручения</div>
+        <div class="lg-item"><span class="lg-dot protocol"></span>Протоколы</div>
+        <div class="lg-item"><span class="lg-dot note"></span>Заметки</div>
+      </div>
+      <div class="cal-weekdays">
+        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+      </div>
+      <div class="cal-grid" id="calendarGrid"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">
+        <div class="modal-indicator"></div>
+        <h3 id="formTitle">Новая запись</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><i class="ph ph-x"></i></button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-field grow">
+          <label>Раздел</label>
+          <div class="seg-control" id="categorySegment">
+            <button type="button" data-val="task" class="seg-btn task active" onclick="pickCategory('task')">
+              <i class="ph ph-check-square"></i><span>Задача</span>
+            </button>
+            <button type="button" data-val="assignment" class="seg-btn assignment" onclick="pickCategory('assignment')">
+              <i class="ph ph-handshake"></i><span>Поручение</span>
+            </button>
+            <button type="button" data-val="protocol" class="seg-btn protocol" onclick="pickCategory('protocol')">
+              <i class="ph ph-scroll"></i><span>Протокол</span>
+            </button>
+            <button type="button" data-val="note" class="seg-btn note" onclick="pickCategory('note')">
+              <i class="ph ph-lightbulb"></i><span>Заметка</span>
+            </button>
+          </div>
+          <input type="hidden" id="categoryInput" value="task">
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Название / Тема</label>
+        <input type="text" id="taskInput" placeholder="Например: Подготовить презентацию для клиента...">
+      </div>
+
+      <div class="form-row">
+        <div class="form-field grow">
+          <label>Важность</label>
+          <select id="priorityInput">
+            <option value="urgent">🔥 Срочно</option>
+            <option value="important">⭐ Важно</option>
+            <option value="normal" selected>📌 Обычное</option>
+            <option value="low">☕ Не важно</option>
+          </select>
+        </div>
+        <div class="form-field grow">
+          <label>Срок</label>
+          <input type="date" id="dueDateInput">
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Файл (до 5 МБ)</label>
+        <div class="file-drop" id="fileDrop">
+          <input type="file" id="fileInput" onchange="handleNewFileSelected()">
+          <i class="ph ph-cloud-arrow-up"></i>
+          <div class="file-drop-text">
+            <strong>Перетащите файл</strong> или нажмите для выбора
+          </div>
+        </div>
+        <div class="current-file-display" id="currentFileDisplay" style="display:none">
+          <i class="ph ph-paperclip-tilt"></i>
+          <strong id="currentFileName"></strong>
+          <button type="button" class="remove-file-btn" onclick="removeCurrentFile()">
+            <i class="ph ph-x"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- PROTOCOL ITEMS -->
+      <div class="form-field" id="protocolItemsContainer" style="display:none">
+        <label>Пункты протокола</label>
+        <div class="protocol-items-editor" id="protocolItemsList"></div>
+        <button type="button" class="btn btn-ghost btn-block" onclick="addProtocolItemRow()">
+          <i class="ph ph-plus"></i>
+          <span>Добавить пункт</span>
+        </button>
+      </div>
+
+      <!-- NOTE INTERACTIVE -->
+      <div class="form-field" id="noteInteractiveBlock" style="display:none">
+        <label>Вдохновение</label>
+        <div class="quote-card">
+          <div class="quote-mark">"</div>
+          <p class="quote-text" id="quoteText">Нажми кнопку, чтобы получить вдохновение!</p>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="generateNewQuote()">
+            <i class="ph ph-arrows-clockwise"></i>
+            <span>Новая цитата</span>
+          </button>
+        </div>
+        <label style="margin-top:16px">Быстрые шаблоны</label>
+        <div class="template-row">
+          <button type="button" class="tpl-btn" onclick="insertTemplate('meeting')">📅 Встреча</button>
+          <button type="button" class="tpl-btn" onclick="insertTemplate('idea')">💡 Идея</button>
+          <button type="button" class="tpl-btn" onclick="insertTemplate('todo')">✓ TODO</button>
+          <button type="button" class="tpl-btn" onclick="insertTemplate('question')">❓ Вопрос</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Общее примечание <span class="char-counter" id="charCount">0</span></label>
+        <textarea id="noteInput" placeholder="Дополнительные детали, контекст, ссылки..." maxlength="1000" oninput="updateCharCounter()"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="addTask()">
+        <i class="ph ph-check"></i>
+        <span>Сохранить</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<audio id="audioPlayer"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
