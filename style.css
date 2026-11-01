@@ -137,6 +137,12 @@ i[class^="ph-"], i[class*=" ph-"] {
   position: relative;
   overflow: hidden;
 }
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
 .brand-logo::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3));
