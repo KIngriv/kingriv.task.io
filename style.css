@@ -130,10 +130,10 @@ i[class^="ph-"], i[class*=" ph-"] {
 .brand-logo {
   width: 44px; height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background:transparent;
   display: flex; align-items: center; justify-content: center;
   color: white; font-size: 22px;
-  box-shadow: 0 8px 24px var(--accent-glow);
+  box-shadow:none;
   position: relative;
   overflow: hidden;
 }
